@@ -358,7 +358,7 @@ end if
    if (wav_on .and. .not. allocated(lon_local_wav) ) then
       call mpp_get_compute_domain( wav_domain,is,ie,js,je)
       allocate(lon_local_wav(is:ie,js:je), lat_local_wav(is:ie,js:je))
-      call get_grid_version_2(grid_file, 'wav', wav_domain, is, ie, js, je, lon_local_wav, lat_local_wav, &
+      call get_grid_version_2(fileobj, 'wav', wav_domain, is, ie, js, je, lon_local_wav, lat_local_wav, &
            min_glo_lon_wav, max_glo_lon_wav )
    endif
  end if

@@ -87,6 +87,7 @@ integer :: atm_mode = 0 !> Atmosphere mode - possible values are 0 (uninitialize
 integer :: ocn_mode = 0 !> Ocean mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
 integer :: lnd_mode = 0 !> Land mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
 integer :: ice_mode = 0 !> Ice mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
+integer :: wav_mode = 0 !> Wave mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
 
 !> @addtogroup data_override_mod
 !> @{
@@ -113,12 +114,14 @@ contains
 !! provide "real" values that will override the default values. Real values can be
 !! specified in either data_table or data_table.yaml. Each line of data_table contains one
 !! data_entry. Items of data_entry are comma-separated.
-subroutine data_override_init(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in, mode)
+subroutine data_override_init(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in, &
+                              Wave_domain_in, mode)
   type (domain2d), intent(in), optional :: Atm_domain_in !< Atmosphere domain
   type (domain2d), intent(in), optional :: Ocean_domain_in !< Ocean domain
   type (domain2d), intent(in), optional :: Ice_domain_in !< Ice domain
   type (domain2d), intent(in), optional :: Land_domain_in !< Land domain
   type(domainUG) , intent(in), optional :: Land_domainUG_in !< Land domain, unstructured grid
+  type (domain2d), intent(in), optional :: Wave_domain_in !< Wave domain
   integer, intent(in), optional :: mode !< Real precision of initialized domains. Possible values are r4_kind or
                                         !! r8_kind.
   integer :: mode_selector

@@ -263,7 +263,7 @@ class(*),dimension(:,:), intent(in), optional :: area_in
       integer :: io, ierr, nc, logunit
       integer :: field_size_local
       real(r8_kind) :: sum_area_local
-      integer :: ensemble_size(6)
+      integer :: ensemble_size(7)
 !-------------------------------------------------------------------------------
 !    if routine has already been executed, exit.
 !-------------------------------------------------------------------------------
