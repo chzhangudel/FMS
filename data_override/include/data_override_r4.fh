@@ -35,6 +35,9 @@
 #undef DATA_OVERRIDE_UNSET_ICE_
 #define DATA_OVERRIDE_UNSET_ICE_ data_override_unset_ice_r4
 
+#undef DATA_OVERRIDE_UNSET_WAV_
+#define DATA_OVERRIDE_UNSET_WAV_ data_override_unset_wav_r4
+
 #undef DATA_OVERRIDE_0D_
 #define DATA_OVERRIDE_0D_ data_override_0d_r4
 
@@ -58,6 +61,7 @@
 #undef DATA_OVERRIDE_UNSET_OCN_
 #undef DATA_OVERRIDE_UNSET_LND_
 #undef DATA_OVERRIDE_UNSET_ICE_
+#undef DATA_OVERRIDE_UNSET_WAV_
 #undef DATA_OVERRIDE_0D_
 #undef DATA_OVERRIDE_2D_
 #undef DATA_OVERRIDE_3D_

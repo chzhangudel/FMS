@@ -124,7 +124,6 @@ CONTAINS
     INTEGER, INTENT(in), OPTIONAL :: tile_count
     INTEGER, INTENT(in), OPTIONAL :: domain_position
 
-
     TYPE(domain1d) :: domain_x, domain_y
     INTEGER :: ierr, axlen
     INTEGER :: i, set, tile

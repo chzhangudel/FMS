@@ -87,6 +87,7 @@ integer :: atm_mode = 0 !> Atmosphere mode - possible values are 0 (uninitialize
 integer :: ocn_mode = 0 !> Ocean mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
 integer :: lnd_mode = 0 !> Land mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
 integer :: ice_mode = 0 !> Ice mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
+integer :: wav_mode = 0 !> Wave mode - possible values are 0 (uninitialized), r4_kind, or r8_kind
 
 !> @addtogroup data_override_mod
 !> @{
@@ -113,12 +114,14 @@ contains
 !! provide "real" values that will override the default values. Real values can be
 !! specified in either data_table or data_table.yaml. Each line of data_table contains one
 !! data_entry. Items of data_entry are comma-separated.
-subroutine data_override_init(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in, mode)
+subroutine data_override_init(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in, &
+                              Wave_domain_in, mode)
   type (domain2d), intent(in), optional :: Atm_domain_in !< Atmosphere domain
   type (domain2d), intent(in), optional :: Ocean_domain_in !< Ocean domain
   type (domain2d), intent(in), optional :: Ice_domain_in !< Ice domain
   type (domain2d), intent(in), optional :: Land_domain_in !< Land domain
   type(domainUG) , intent(in), optional :: Land_domainUG_in !< Land domain, unstructured grid
+  type (domain2d), intent(in), optional :: Wave_domain_in !< Wave domain
   integer, intent(in), optional :: mode !< Real precision of initialized domains. Possible values are r4_kind or
                                         !! r8_kind.
   integer :: mode_selector
@@ -131,9 +134,9 @@ subroutine data_override_init(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Lan
 
   select case (mode_selector)
     case (r4_kind)
-      call data_override_init_r4(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in)
+      call data_override_init_r4(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in, Wave_domain_in)
     case (r8_kind)
-      call data_override_init_r8(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in)
+      call data_override_init_r8(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Land_domain_in, Land_domainUG_in, Wave_domain_in)
     case default
       call mpp_error(FATAL, "data_override_init: unsupported mode argument")
   end select
@@ -142,15 +145,16 @@ subroutine data_override_init(Atm_domain_in, Ocean_domain_in, Ice_domain_in, Lan
   if (present(Ocean_domain_in)) ocn_mode = mode_selector
   if (present(Ice_domain_in))   ice_mode = mode_selector
   if (present(Land_domain_in))  lnd_mode = mode_selector
+  if (present(Wave_domain_in))  wav_mode = mode_selector
 end subroutine data_override_init
 
 !> @brief Unset domains that had previously been set for use by data_override.
 !!
 !! This subroutine deallocates any data override domains that have been set.
 subroutine data_override_unset_domains(unset_Atm, unset_Ocean, &
-                                      unset_Ice, unset_Land, must_be_set)
-  logical, intent(in), optional :: unset_Atm, unset_Ocean, unset_Ice, unset_Land !< Set to true to unset the
-                                                                                 !! respective domain
+                                      unset_Ice, unset_Land, unset_Wave, must_be_set)
+  logical, intent(in), optional :: unset_Atm, unset_Ocean, unset_Ice, unset_Land, unset_Wave !< Set to true to unset the
+                                                                                             !! respective domain
   logical, intent(in), optional :: must_be_set !< Set to false to suppress the error when attempting to unset
                                                !! an uninitialized domain
   logical :: fail_if_not_set
@@ -205,6 +209,19 @@ subroutine data_override_unset_domains(unset_Atm, unset_Ocean, &
     end select
     ice_mode = 0
   endif ; endif
+  if (PRESENT(unset_Wave)) then ; if (unset_Wave) then
+    select case (wav_mode)
+      case (r4_kind)
+        call data_override_unset_wav_r4
+      case (r8_kind)
+        call data_override_unset_wav_r8
+      case default
+        if (fail_if_not_set) call mpp_error(FATAL, &
+          "data_override_unset_domains: attempted to unset an Wave_domain that has not been set.")
+    end select
+    wav_mode = 0
+  endif ; endif
+
 end subroutine data_override_unset_domains
 
 end module data_override_mod
